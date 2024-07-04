@@ -1,0 +1,6 @@
+numpy==2.0.0
+pandas==2.2.2
+sweetviz==2.3.1
+autoviz==0.1.905
+pandas-profiling
+imblearn

@@ -1,0 +1,16 @@
+# Ignore Python bytecode
+*.pyc
+__pycache__/
+
+# Ignore log files
+*.log
+
+# Ignore environment files
+.env
+**/ai_bank-env/
+AutoViz_Plots/
+data/
+bfs-env/
+
+# Ignore macOS-specific files
+.DS_Store

@@ -7,7 +7,7 @@ from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, BaggingClassifier 
 from sklearn.metrics import accuracy_score,precision_score,recall_score
-from sklearn.model_selection import RandomizedSearchCV
+import numpy as np
 
 
 def get_metrics(y_true, y_pred):
@@ -31,7 +31,7 @@ def model_build(X_train_sc, X_val_sc, y_train, y_val):
         y_pred_nb = NB.predict(X_val_sc)
 
         # # Support Vector Classifier
-        SVM = SVC(C=0.8, kernel='linear', probability=True)
+        SVM = SVC(C=0.8, kernel='rbf', probability=True)
         SVM.fit(X_train_sc, y_train)
         y_pred_svm = SVM.predict(X_val_sc)
 
@@ -83,4 +83,4 @@ def model_build(X_train_sc, X_val_sc, y_train, y_val):
         return y_pred_lg, y_pred_nb, y_pred_svm, y_pred_knn, y_pred_dt, y_pred_bg, y_pred_rf, y_pred_gb, y_pred_ab, 200
 
     except Exception as e:
-        return f"Exception in received request {traceback.format_exec()}", 'error', 'error', 'error', 'error', 'error', 'error', 'error', 'error', 400 
+        return f"Exception in received request {traceback.format_exc()}", 'error', 'error', 'error', 'error', 'error', 'error', 'error', 'error', 400 

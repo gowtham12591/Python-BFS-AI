@@ -25,7 +25,7 @@ def hyper_parameter_tuning(X_train, y_train, model_classifier):
                     }
         model = model_classifier()
         model_tuning = RandomizedSearchCV(estimator = model, param_distributions = random_grid,
-                    n_iter = 100, cv = 5, verbose=2, random_state=35, n_jobs = 1)
+                    n_iter = 20, cv = 5, verbose=2, random_state=42, n_jobs = 1)
         model_tuning.fit(X_train, y_train)
 
         print ('Random grid: ', random_grid, '\n')
@@ -44,4 +44,4 @@ def hyper_parameter_tuning(X_train, y_train, model_classifier):
         return n_estimators, min_samples_split, min_samples_leaf, max_features, max_depth, bootstrap, 200
     
     except Exception as e:
-        return f"Exception in received request {traceback.format_exec()}", 'error', 'error', 'error', 'error', 'error', 400 
+        return f"Exception in received request {traceback.format_exc()}", 'error', 'error', 'error', 'error', 'error', 400 

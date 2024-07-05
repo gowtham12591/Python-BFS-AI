@@ -23,8 +23,8 @@ def hyper_parameter_tuning(X_train, y_train, model_classifier):
                         'min_samples_leaf': min_samples_leaf,
                         'bootstrap': bootstrap
                     }
-        model = model_classifier()
-        model_tuning = RandomizedSearchCV(estimator = model, param_distributions = random_grid,
+        
+        model_tuning = RandomizedSearchCV(estimator = model_classifier, param_distributions = random_grid,
                     n_iter = 20, cv = 5, verbose=2, random_state=42, n_jobs = 1)
         model_tuning.fit(X_train, y_train)
 

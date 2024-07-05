@@ -10,6 +10,13 @@ from src.data_preprocess import missing_value, duplicate_value, data_visualizati
 from src.model_train import get_metrics, model_build
 from src.model_tuning import hyper_parameter_tuning
 
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, BaggingClassifier 
+
 #### Dataset Link : https://www.kaggle.com/datasets/rashmiranu/banking-dataset-classification
 
 # Read the dataset
@@ -68,7 +75,7 @@ GB_model = get_metrics(y_val, y_pred_gb)
 AB_model = get_metrics(y_val, y_pred_ab)
 
 model_metrics = {'Model_Name': ['LG_model', 'NB_model', 'SVM_model', 'KNN_model', 'DT_model', 'BG_model', 'RF_model', 'GB_model', 'AB_model'],
-                 'Model_Classifier': ['LogisticRegression', 'GaussianNB', 'SVC', 'KNeighborsClassifier', 'DecisionTreeClassifier', 'BaggingClassifier',
+                 'Model_Classifier': [LogisticRegression(), GaussianNB(), SVC(), KNeighborsClassifier(), DecisionTreeClassifier(), BaggingClassifier(),
                                       'RandomForestClassifier', 'GradientBoostingClassifier', 'AdaBoostClassifier'],
                  'Model_Metrics': [LG_model, NB_model, SVM_model, KNN_model, DT_model, BG_model, RF_model, GB_model, AB_model]}
 

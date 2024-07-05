@@ -1,9 +1,10 @@
 
+import numpy as np
 from sklearn.model_selection import RandomizedSearchCV
 
 # Hyper parameter tuning
 
-def hyper_parameter_tuning(X_train, y_train, model, classifier):
+def hyper_parameter_tuning(X_train, y_train, model_classifier):
     # define random parameters grid
     n_estimators = [5,21,51,101] # number of trees in the random forest
     max_features = ['auto', 'sqrt'] # number of features in consideration at every split
@@ -19,7 +20,7 @@ def hyper_parameter_tuning(X_train, y_train, model, classifier):
                     'min_samples_leaf': min_samples_leaf,
                     'bootstrap': bootstrap
                   }
-    
+    model = model_classifier()
     model_tuning = RandomizedSearchCV(estimator = model, param_distributions = random_grid,
                    n_iter = 100, cv = 5, verbose=2, random_state=35, n_jobs = 1)
     model_tuning.fit(X_train, y_train)
@@ -37,4 +38,4 @@ def hyper_parameter_tuning(X_train, y_train, model, classifier):
     max_depth = best_params['max_depth']
     bootstrap = best_params['bootstrap']
 
-    return n_estimators, min_samples_leaf, min_samples_leaf, max_features, max_depth, bootstrap
+    return n_estimators, min_samples_split, min_samples_leaf, max_features, max_depth, bootstrap

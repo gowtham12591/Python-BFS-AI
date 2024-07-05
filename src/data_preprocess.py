@@ -88,13 +88,21 @@ def encoding(df):
     except Exception as e:
         return f"Exception in received request {traceback.format_exec()}", 400
     
-def data_splitting(df):
+def feature_splitting(df):
 
     try:
-
         # Splitting the independent and target features
         independent_features = df.drop('y', axis=1)
         target_feature = df[['y']]
+
+        return independent_features, target_feature, 200
+    
+    except Exception as e:
+        return f"Exception in received request {traceback.format_exec()}", 'error', 400
+    
+def data_splitting(independent_features, target_feature):
+
+    try:
 
         count = target_feature.value_counts()
         print('Target feature before sampling: \n', count)

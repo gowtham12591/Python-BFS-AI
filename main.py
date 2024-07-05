@@ -1,23 +1,12 @@
 # Import required libraries
-
 import pandas as pd
 import numpy as np
 
-# Model Selection libraries
-from sklearn.linear_model import LogisticRegression
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, BaggingClassifier 
-# Model Metrics
-from sklearn.metrics import accuracy_score,precision_score,recall_score
-# Hyper Parameter Tuning
-from sklearn.model_selection import RandomizedSearchCV
 # Model saving
 import pickle
 
-from src.data_preprocess import missing_value, duplicate_value, data_visualization, encoding, feature_splitting, data_splitting, scaling
+# Import the required the functions for preprocessing, model training and tuning
+from src.data_preprocess import missing_value, duplicate_value, data_visualization, encoding, feature_splitting, data_splitting, scaling, scaling_test
 from src.model_train import get_metrics, model_build
 from src.model_tuning import hyper_parameter_tuning
 
@@ -41,6 +30,7 @@ data_visualization(df, 'data/train')
 
 # Encode the categorical data - One-hot encoding is used, which is better than label-encoding
 df, status = encoding(df)
+print(df.head())
 if status != 200:
     print(df)
 
@@ -95,8 +85,46 @@ best_accuracy = model_df['accuracy'].max()
 print(f"Model with highest accuracy: {best_model_name}, {best_model_classifier}, (Accuracy: {best_accuracy:.2f})")
 
 # Hyper paramter tuning
-n_estimators, min_samples_split, min_samples_leaf, max_features, max_depth, bootstrap = hyper_parameter_tuning(X_train, y_train, best_model_classifier)
+n_estimators, min_samples_split, min_samples_leaf, max_features, max_depth, bootstrap, status = hyper_parameter_tuning(X_train, y_train, 
+                                                                                                               best_model_classifier)
+if status != 200:
+    print(n_estimators)
+
 model_tuned = best_model_classifier(n_estimators = n_estimators, min_samples_split = min_samples_split,
                                          min_samples_leaf= min_samples_leaf, max_features = max_features,
                                          max_depth= max_depth, bootstrap=bootstrap) 
 model_tuned.fit(X_train_sc, y_train)
+
+# Predicting the output on validation data using the fine tuned model
+y_pred = model_tuned.predict(X_val_sc)
+print(get_metrics(y_val, y_pred))
+
+# Save the model to a file
+with open('model/tuned_model.pkl', 'wb') as file:
+    pickle.dump(model_tuned, file)
+
+# Load the test dataset and then pre=process it before making the prediction
+df_test = pd.read_csv('data/test.csv', sep=';')
+
+# Encode the categorical data - One-hot encoding is used, which is better than label-encoding
+df_test, status = encoding(df_test)
+if status != 200:
+    print(df_test)
+
+# Feature Splitting
+X_test, y_test, status = feature_splitting(df_test)
+if status != 200:
+    print(independent_features)
+
+# Scaling
+X_test_sc, status = scaling(X_test)
+if status != 200:
+    print(X_test_sc)
+
+# Loading the saved model
+with open('model/tuned_model.pkl', 'rb') as file:
+    loaded_model = pickle.load(file)
+
+# Predicting the output on test data using the loaded fine tuned model
+y_pred = loaded_model.predict(X_test_sc)
+print(get_metrics(y_test, y_pred))

@@ -31,7 +31,7 @@ def missing_value(df):
         return df, 200
     
     except Exception as e:
-        return f"Exception in received request {traceback.format_exec()}", 400
+        return f"Exception in received request {traceback.format_exc()}", 400
     
 def duplicate_value(df):
 
@@ -44,7 +44,7 @@ def duplicate_value(df):
         else:
             return df, 200
     except Exception as e:
-        return f"Exception in received request {traceback.format_exec()}", 400
+        return f"Exception in received request {traceback.format_exc()}", 400
     
 def data_visualization(df, data_path):
 
@@ -60,7 +60,7 @@ def data_visualization(df, data_path):
         profile_pandas.to_file('pandas_profile.html')
 
     except Exception as e:
-        print(f"Exception in received request {traceback.format_exec()}")
+        print(f"Exception in received request {traceback.format_exc()}")
     
 
 def encoding(df):
@@ -86,7 +86,7 @@ def encoding(df):
         return df_encoded, 200
     
     except Exception as e:
-        return f"Exception in received request {traceback.format_exec()}", 400
+        return f"Exception in received request {traceback.format_exc()}", 400
     
 def feature_splitting(df):
 
@@ -98,7 +98,7 @@ def feature_splitting(df):
         return independent_features, target_feature, 200
     
     except Exception as e:
-        return f"Exception in received request {traceback.format_exec()}", 'error', 400
+        return f"Exception in received request {traceback.format_exc()}", 'error', 400
     
 def data_splitting(independent_features, target_feature):
 
@@ -128,7 +128,7 @@ def data_splitting(independent_features, target_feature):
         return X_train, X_val, y_train, y_val, 200
     
     except Exception as e:
-        return f"Exception in received request {traceback.format_exec()}", 'error', 'error', 'error', 400
+        return f"Exception in received request {traceback.format_exc()}", 'error', 'error', 'error', 400
 
 def scaling(X_train, X_val):
 
@@ -146,4 +146,20 @@ def scaling(X_train, X_val):
         return X_train_sc, X_val_sc, 200
     
     except Exception as e:
-        return f"Exception in received request {traceback.format_exec()}", 'error', 400
+        return f"Exception in received request {traceback.format_exc()}", 'error', 400
+    
+def scaling_test(X_test):
+
+    try:
+
+        # Let us scale the features using z-scalar technique
+        sc = StandardScaler() 
+        X_test_sc = sc.fit_transform(X_test) # Equivalent to X_train_ = (X_train - X_train.mean()) / X_train.std()
+
+        # Checking the max and min value of the series
+        print(X_test_sc.max(), X_test_sc.min())         # Gives the max and min values of all the features combined
+
+        return X_test_sc, 200
+    
+    except Exception as e:
+        return f"Exception in received request {traceback.format_exc()}", 400

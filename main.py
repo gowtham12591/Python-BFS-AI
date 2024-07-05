@@ -6,7 +6,7 @@ import numpy as np
 import pickle
 
 # Import the required the functions for preprocessing, model training and tuning
-from src.data_preprocess import missing_value, duplicate_value, data_visualization, encoding, feature_splitting, data_splitting, scaling, scaling_test
+from src.data_preprocess import missing_value, duplicate_value, data_visualization, encoding, encode_dep_feature, feature_splitting, data_splitting, scaling, scaling_test
 from src.model_train import get_metrics, model_build
 from src.model_tuning import hyper_parameter_tuning
 
@@ -28,19 +28,23 @@ if status != 200:
 # Perform automated data visualization
 data_visualization(df, 'data/train')
 
-# Encode the categorical data - One-hot encoding is used, which is better than label-encoding
-df, status = encoding(df)
-print(df.head())
-if status != 200:
-    print(df)
-
 # Feature Splitting
 independent_features, dependent_feature, status = feature_splitting(df)
 if status != 200:
     print(independent_features)
 
+# Encode the categorical data - One-hot encoding is used, which is better than label-encoding
+encoded_features, status = encoding(independent_features)
+print(df.head())
+if status != 200:
+    print(df)
+
+target_feature, status = encode_dep_feature(dependent_feature)
+if status != 200:
+    print(target_feature)
+
 # Data split
-X_train, X_val, y_train, y_val, status = data_splitting(independent_features, dependent_feature)
+X_train, X_val, y_train, y_val, status = data_splitting(encoded_features, target_feature)
 if status != 200:
     print(X_train)
 
@@ -106,15 +110,20 @@ with open('model/tuned_model.pkl', 'wb') as file:
 # Load the test dataset and then pre=process it before making the prediction
 df_test = pd.read_csv('data/test.csv', sep=';')
 
-# Encode the categorical data - One-hot encoding is used, which is better than label-encoding
-df_test, status = encoding(df_test)
-if status != 200:
-    print(df_test)
-
 # Feature Splitting
-X_test, y_test, status = feature_splitting(df_test)
+independent_features, dependent_feature, status = feature_splitting(df_test)
 if status != 200:
     print(independent_features)
+
+# Encode the categorical data - One-hot encoding is used, which is better than label-encoding
+X_test, status = encoding(independent_features)
+if status != 200:
+    print(X_test)
+
+# Target feature encoding
+y_test, status = encode_dep_feature(dependent_feature)
+if status != 200:
+    print(y_test)
 
 # Scaling
 X_test_sc, status = scaling(X_test)

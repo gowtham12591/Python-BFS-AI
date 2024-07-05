@@ -87,6 +87,16 @@ def encoding(df):
     
     except Exception as e:
         return f"Exception in received request {traceback.format_exc()}", 400
+
+def encode_dep_feature(target_feature):
+    try:
+        # Splitting the independent and target features
+        target_feature['y'] = target_feature['y'].replace(['no', 'yes'], [0, 1])
+
+        return target_feature, 200
+    
+    except Exception as e:
+        return f"Exception in received request {traceback.format_exc()}", 400
     
 def feature_splitting(df):
 
